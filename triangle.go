@@ -1,5 +1,7 @@
 package stl
 
+import "math"
+
 // This file defines the Triangle data type, the building block for Solid
 
 // Triangle represents single triangles used in Solid.Triangles. The vertices
@@ -64,4 +66,19 @@ func (t *Triangle) hasEqualVertices() bool {
 func (t *Triangle) checkNormal(tol float64) bool {
 	calculatedNormal := t.calculateNormal()
 	return t.Normal.angle(calculatedNormal) < tol
+}
+
+// calculate the are of a triangle
+func (t *Triangle) CalculateArea() float32 {
+	ax := t.Vertices[1][0] - t.Vertices[0][0]
+	ay := t.Vertices[1][1] - t.Vertices[0][1]
+	az := t.Vertices[1][2] - t.Vertices[0][2]
+	bx := t.Vertices[2][0] - t.Vertices[0][0]
+	by := t.Vertices[2][1] - t.Vertices[0][1]
+	bz := t.Vertices[2][2] - t.Vertices[0][2]
+	cx := ay*bz - az*by
+	cy := az*bx - ax*bz
+	cz := ax*by - ay*bx
+
+	return float32(0.5 * math.Sqrt(float64(cx*cx+cy*cy+cz*cz)))
 }
