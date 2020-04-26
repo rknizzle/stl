@@ -1,5 +1,7 @@
 package stl
 
+import "math"
+
 // This file defines the Triangle data type, the building block for Solid
 
 // Triangle represents single triangles used in Solid.Triangles. The vertices
@@ -64,4 +66,33 @@ func (t *Triangle) hasEqualVertices() bool {
 func (t *Triangle) checkNormal(tol float64) bool {
 	calculatedNormal := t.calculateNormal()
 	return t.Normal.angle(calculatedNormal) < tol
+}
+
+// calculate the are of a triangle
+func (t *Triangle) CalculateArea() float32 {
+	ax := t.Vertices[1][0] - t.Vertices[0][0]
+	ay := t.Vertices[1][1] - t.Vertices[0][1]
+	az := t.Vertices[1][2] - t.Vertices[0][2]
+	bx := t.Vertices[2][0] - t.Vertices[0][0]
+	by := t.Vertices[2][1] - t.Vertices[0][1]
+	bz := t.Vertices[2][2] - t.Vertices[0][2]
+	cx := ay*bz - az*by
+	cy := az*bx - ax*bz
+	cz := ax*by - ay*bx
+
+	return float32(0.5 * math.Sqrt(float64(cx*cx+cy*cy+cz*cz)))
+}
+
+// calculate the volume of a triangle
+// formula found at:
+//https://stackoverflow.com/questions/1406029/how-to-calculate-the-volume-of-a-3d-mesh-object-the-surface-of-which-is-made-up
+func (t *Triangle) CalculateSignedVolume() float32 {
+	v321 := t.Vertices[2][0] * t.Vertices[1][1] * t.Vertices[0][2]
+	v231 := t.Vertices[1][0] * t.Vertices[2][1] * t.Vertices[0][2]
+	v312 := t.Vertices[2][0] * t.Vertices[0][1] * t.Vertices[1][2]
+	v132 := t.Vertices[0][0] * t.Vertices[2][1] * t.Vertices[1][2]
+	v213 := t.Vertices[1][0] * t.Vertices[0][1] * t.Vertices[2][2]
+	v123 := t.Vertices[0][0] * t.Vertices[1][1] * t.Vertices[2][2]
+
+	return (1.0 / 6.0) * (-v321 + v231 + v312 - v132 - v213 + v123)
 }

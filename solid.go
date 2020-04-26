@@ -56,6 +56,66 @@ func (solid *Solid) Measure() SolidMeasure {
 	return measure
 }
 
+// loop through every vertex to find the bounding box dimensions
+func (solid *Solid) GetBoundingBox() [3]float32 {
+	// get a collection of every vertex that makes up the solid
+	var vertices []Vec3
+	for _, triangle := range solid.Triangles {
+		for _, vertex := range triangle.Vertices {
+			vertices = append(vertices, vertex)
+		}
+	}
+
+	minX := vertices[0][0]
+	maxX := vertices[0][0]
+	minY := vertices[0][1]
+	maxY := vertices[0][1]
+	minZ := vertices[0][2]
+	maxZ := vertices[0][2]
+
+	// loop through all vertices and find the minimum and maximum values
+	for _, vert := range vertices {
+		if vert[0] < minX {
+			minX = vert[0]
+		}
+		if vert[0] > maxX {
+			maxX = vert[0]
+		}
+		if vert[1] < minY {
+			minY = vert[1]
+		}
+		if vert[1] > maxY {
+			maxY = vert[1]
+		}
+		if vert[2] < minZ {
+			minZ = vert[2]
+		}
+		if vert[2] > maxZ {
+			maxZ = vert[2]
+		}
+	}
+
+	return [3]float32{maxX - minX, maxY - minY, maxZ - minZ}
+}
+
+// get the surface area of the solid by calculating the area of each triangle
+func (solid *Solid) GetSurfaceArea() float32 {
+	var area float32 = 0.0
+	for _, triangle := range solid.Triangles {
+		area += triangle.CalculateArea()
+	}
+	return area
+}
+
+// get the volume of the solid
+func (solid *Solid) GetVolume() float32 {
+	var volume float32 = 0.0
+	for _, triangle := range solid.Triangles {
+		volume += triangle.CalculateSignedVolume()
+	}
+	return volume
+}
+
 // Transform applies a 4x4 transformation matrix to every vertex
 // and recalculates the normal for every triangle
 func (solid *Solid) Transform(transformationMatrix *Mat4) {

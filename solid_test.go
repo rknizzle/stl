@@ -18,6 +18,15 @@ func TestTransform(t *testing.T) {
 	}
 }
 
+func TestBoundingBox(t *testing.T) {
+	s := makeTestSolid()
+	bbox := s.GetBoundingBox()
+
+	if bbox != (Vec3{1, 1, 1}) {
+		t.Errorf("Expected bounding box of [1 1 1], found: %v", bbox)
+	}
+}
+
 func TestScale(t *testing.T) {
 	sOrig := makeTestSolid()
 	s := makeTestSolid()
