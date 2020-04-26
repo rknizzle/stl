@@ -107,6 +107,15 @@ func (solid *Solid) GetSurfaceArea() float32 {
 	return area
 }
 
+// get the volume of the solid
+func (solid *Solid) GetVolume() float32 {
+	var volume float32 = 0.0
+	for _, triangle := range solid.Triangles {
+		volume += triangle.CalculateSignedVolume()
+	}
+	return volume
+}
+
 // Transform applies a 4x4 transformation matrix to every vertex
 // and recalculates the normal for every triangle
 func (solid *Solid) Transform(transformationMatrix *Mat4) {
